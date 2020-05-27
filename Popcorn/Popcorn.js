@@ -3,6 +3,30 @@ class PopcornViewer extends Application {
     console.log("Super called");
   }
 
+  activateListeners(html) {
+    super.activateListeners(html);
+    const myButton = html.find("button[name='act']");
+    myButton.on("click", event => this._onClickButton(event, html));
+  }   
+  
+  async _onClickButton(event, html) {
+    console.log("Event target id "+event.target.id);
+
+    const tokenId = event.target.id;
+    const token = canvas.tokens.get(tokenId);
+    
+    await token.setFlag("world","popcornHasActed",true);
+    await ChatMessage.create({
+      content: `${token.name} has taken their action for the exchange.`,
+      speaker:
+          {
+              alias: "Game: "
+          }
+      });
+                
+    this.render(false);
+  }
+
   static prepareButtons(hudButtons){
     let hud = hudButtons.find(val => {return val.name == "token";})
     
@@ -26,10 +50,6 @@ class PopcornViewer extends Application {
               viewer.render(true);  
 
               Hooks.on('renderCombatTracker', () => {
-                  setTimeout(function(){viewer.render(false);},delay);
-              })
-
-              Hooks.on('renderChatMessage', () => {
                   setTimeout(function(){viewer.render(false);},delay);
               })
             },
@@ -64,7 +84,7 @@ class PopcornViewer extends Application {
         //Create a row for each combatant with the correct flag
         for(var i=0;i<combatants.length;i++){
             tokenId = combatants[i].token._id;//This is the representative of a token in the combatants list.
-            console.log(tokenId);
+            //console.log(tokenId);
             //Now to find the token in the placeables layer that corresponds to this token.
             let foundToken = tokens.find(val => {return val.id == tokenId;})
 
@@ -74,16 +94,7 @@ class PopcornViewer extends Application {
                 if (hasActed == undefined || hasActed == false){
                 rows.push(`<tr><td width="70"><img src="${foundToken.actor.img}" width="50" height="50"></img>
                 </td><td>${foundToken.name}</td>
-                <td><button type="button" name=${tokenId} onclick='
-                
-                tokens = canvas.tokens.placeables;
-                for (let i = 0; i<tokens.length;i++){
-                    if (tokens[i].id == this.name){
-                        tokens[i].setFlag("world","popcornHasActed",true);
-                        ChatMessage.create({content: "${tokens[i].name} has taken their action for the exchange.", speaker : { alias : "Game: "}})                            
-                    }
-                }
-                '>Act</button></td></tr>`);
+                <td><button type="button" id="${tokenId}" name="act" onclick=''>Act</button></td></tr>`);
             }
             } else {
                 if (hasActed == undefined || hasActed == false){
