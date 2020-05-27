@@ -1,6 +1,6 @@
 class PopcornViewer extends Application {
   super(options){
-    console.log("Super called");
+    //console.log("Super called");
   }
 
   activateListeners(html) {
@@ -10,7 +10,7 @@ class PopcornViewer extends Application {
   }   
   
   async _onClickButton(event, html) {
-    console.log("Event target id "+event.target.id);
+    //console.log("Event target id "+event.target.id);
 
     const tokenId = event.target.id;
     const token = canvas.tokens.get(tokenId);
@@ -64,7 +64,7 @@ class PopcornViewer extends Application {
 } 
 
   preparePopcorn(){
-    console.log("PreparePopcorn called");
+    //console.log("PreparePopcorn called");
     //Get a list of the active combatants
     if (game.combat!= null){ 
         var combatants = game.combat.combatants;
