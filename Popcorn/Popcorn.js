@@ -23,7 +23,7 @@ class PopcornViewer extends Application {
               alias: "Game: "
           }
       });
-                
+      game.socket.emit("module.Popcorn",{"HasActed":true});
     this.render(false);
   }
 
@@ -52,6 +52,8 @@ class PopcornViewer extends Application {
               Hooks.on('renderCombatTracker', () => {
                   setTimeout(function(){viewer.render(false);},delay);
               })
+
+              game.socket.on("module.Popcorn", data => viewer.render(false))
             },
             button:true
         });
@@ -83,13 +85,24 @@ class PopcornViewer extends Application {
         }
         //Create a row for each combatant with the correct flag
         for(var i=0;i<combatants.length;i++){
+          if (combatants[i].token != undefined){ 
             tokenId = combatants[i].token._id;//This is the representative of a token in the combatants list.
-            //console.log(tokenId);
+          }
             //Now to find the token in the placeables layer that corresponds to this token.
-            let foundToken = tokens.find(val => {return val.id == tokenId;})
+            
+            let foundToken = undefined;
 
-            let hasActed = foundToken.getFlag("world","popcornHasActed");
+            if (tokenId != undefined){
+              foundToken = tokens.find(val => {return val.id == tokenId;})
+            }
 
+            let hasActed = true;
+
+            if (foundToken != undefined){
+              //There is no token for this actor in the conflict; it probably means the token has been deleted from the scene. We need to ignore this actor. Easiest way to do that is to leave hasActed as true.
+              hasActed = foundToken.getFlag("world","popcornHasActed");
+            } 
+            
             if (game.user.isGM) {
                 if (hasActed == undefined || hasActed == false){
                 rows.push(`<tr><td width="70"><img src="${foundToken.actor.img}" width="50" height="50"></img>
