@@ -8,4 +8,5 @@
   "minimumCoreVersion": "0.6.0",
   "compatibleCoreVersion":"0.6.0",
   "socket":true
+  "download":"https://github.com/Sk1mble/Popcorn/archive/master.zip"
 }
