@@ -6,7 +6,7 @@
   "scripts": ["./Popcorn.js"],
   "version": "1.0.0",
   "minimumCoreVersion": "0.6.0",
-  "compatibleCoreVersion":"0.6.0",
+  "compatibleCoreVersion":"0.6.1",
   "socket":true,
   "download":"https://github.com/Sk1mble/Popcorn/archive/master.zip"
 }
