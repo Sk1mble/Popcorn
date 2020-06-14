@@ -17,7 +17,7 @@ class PopcornViewer extends Application {
     
     await token.setFlag("world","popcornHasActed",true);
     await ChatMessage.create({
-      content: `${token.name} has taken their action for the exchange.`,
+      content: `${token.name} is acting now.`,
       speaker:
           {
               alias: "Game: "
