@@ -17,7 +17,7 @@ class PopcornViewer extends Application {
     
     await token.setFlag("world","popcornHasActed",true);
     await ChatMessage.create({
-      content: `${token.name} has taken their action for the exchange.`,
+      content: `${token.name} is acting now.`,
       speaker:
           {
               alias: "Game: "
@@ -49,10 +49,7 @@ class PopcornViewer extends Application {
               viewer = new PopcornViewer(opt);
               viewer.render(true);  
 
-              Hooks.on('renderCombatTracker', () => {
-                  setTimeout(function(){viewer.render(false);},delay);
-              })
-
+              game.system.popcorn = viewer;
               game.socket.on("module.Popcorn", data => viewer.render(false))
             },
             button:true
@@ -86,6 +83,7 @@ class PopcornViewer extends Application {
         //Create a row for each combatant with the correct flag
         for(var i=0;i<combatants.length;i++){
           if (combatants[i].token != undefined){ 
+
             tokenId = combatants[i].token._id;//This is the representative of a token in the combatants list.
           }
             //Now to find the token in the placeables layer that corresponds to this token.
@@ -94,6 +92,9 @@ class PopcornViewer extends Application {
 
             if (tokenId != undefined){
               foundToken = tokens.find(val => {return val.id == tokenId;})
+            }
+            if ((combatants[i].hidden || foundToken.data.hidden) && !game.user.isGM){
+              continue;
             }
 
             let hasActed = true;
@@ -148,4 +149,13 @@ class PopcornViewer extends Application {
 Hooks.on('getSceneControlButtons', function(hudButtons)
 {
     PopcornViewer.prepareButtons(hudButtons);
+})
+
+Hooks.on('renderCombatTracker', () => {
+  if (game.system.popcorn != undefined) setTimeout(function(){game.system.popcorn.render(false);},50);
+})
+Hooks.on('updateToken', (scene, token, data) => {
+if (data.hidden!=undefined){
+  if (game.system.popcorn != undefined) setTimeout(function(){game.system.popcorn.render(false);},50);
+}
 })
