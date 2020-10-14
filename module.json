@@ -9,5 +9,5 @@
   "compatibleCoreVersion":"0.7.3",
   "socket":true,
   "download":"https://github.com/Sk1mble/Popcorn/archive/Popcorn-1.1.1.zip",
-  "manifest":"https://raw.githubusercontent.com/Sk1mble/Popcorn/Popcorn-1.1.0/Popcorn/module.json"
+  "manifest":"https://raw.githubusercontent.com/Sk1mble/Popcorn/Popcorn-1.1.1/Popcorn/module.json"
 }
