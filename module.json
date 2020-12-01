@@ -18,6 +18,6 @@
       "name": "Español",
       "path": "languages/es.json"
   }],
-  "download": "https://github.com/Sk1mble/Popcorn/archive/master.zip",
+  "download": "https://github.com/Sk1mble/Popcorn/archive/V1.2.0.zip",
   "manifest": "https://raw.githubusercontent.com/Sk1mble/Popcorn/master/module.json"
 }
