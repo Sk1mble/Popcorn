@@ -26,12 +26,12 @@ class PopcornViewer extends Application {
   static prepareButtons(hudButtons) {
     let hud = hudButtons.find(val => {return val.name == "token";})
     
-    if (hud){
+    if (hud) {
         hud.tools.push({
           name: game.i18n.localize("Popcorn.ButtonName"),
           title: game.i18n.localize("Popcorn.ButtonHint"),
           icon: "fas fa-bolt",
-          onClick: ()=> {
+          onClick: () => {
             const delay = 200;
 
             let opt = Dialog.defaultOptions;
@@ -96,7 +96,7 @@ class PopcornViewer extends Application {
         }
 
         let s_act = game.i18n.localize("Popcorn.Act");
-        for(var i=0; i<combatants.length; i++) {
+        for(var i = 0; i < combatants.length; i++) {
 
           if (combatants[i].token != undefined) {
             // This is the representative of a token in the combatants list.
@@ -112,7 +112,7 @@ class PopcornViewer extends Application {
           }
 
           let hasActed = true;
-          if (foundToken != undefined){
+          if (foundToken != undefined) {
             // There is no token for this actor in the conflict; it probably means the token has been deleted from the scene. We need to ignore this actor. Easiest way to do that is to leave hasActed as true.
             hasActed = foundToken.getFlag("world", "popcornHasActed");
           } 
