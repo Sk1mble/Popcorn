@@ -1,0 +1,16 @@
+{
+	"Popcorn.Act": "Actuar",
+	"Popcorn.ActNow": "¿Actuar ahora?",
+	"Popcorn.ButtonHint": "Mostrar asistente de iniciativa palomitera",
+	"Popcorn.ButtonName": "Iniciativa palomitera",
+	"Popcorn.Character": "Personaje",
+	"Popcorn.EndConflict": "Terminar el conflicto",
+	"Popcorn.EndingConflict": "Se termina el conflicto.",
+	"Popcorn.Exchange": "<h1>Intercambio {round}</h1>",
+	"Popcorn.Game": "Juego: ",
+	"Popcorn.IsActing": "{name} tiene el turno ahora.",
+	"Popcorn.NewExchange": "Comienza un nuevo intercambio.",
+	"Popcorn.NextExchange": "Siguiente intercambio",
+	"Popcorn.NoConflicts": "<h1>¡No hay conflictos!</h1>",
+	"Popcorn.WindowTitle": "Asistente de iniciativa palomitera"
+}
