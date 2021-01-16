@@ -107,11 +107,14 @@ class PopcornViewer extends Application {
           if (tokenId != undefined) {
             foundToken = tokens.find(val => {return val.id == tokenId;})
           }
+          if (foundToken == undefined){
+            return;
+          }
           if ((combatants[i].hidden || foundToken.data.hidden) && !game.user.isGM){
             continue;
           }
 
-          let hasActed = true;
+          let hasActed = undefined;
           if (foundToken != undefined) {
             // There is no token for this actor in the conflict; it probably means the token has been deleted from the scene. We need to ignore this actor. Easiest way to do that is to leave hasActed as true.
             hasActed = foundToken.getFlag("world", "popcornHasActed");
@@ -153,14 +156,37 @@ class PopcornViewer extends Application {
 
           myContents += `<p><button type="button" onclick='
           let actors = canvas.tokens.placeables;
-          actors.forEach(actor =>{actor.setFlag("world","popcornHasActed",false)});
+            let updates = actors.map(actor => {
+                            let update = {};
+                            console.log(actor)
+                            update._id = actor.id;
+                            update.flags = {
+                                                "world":
+                                                {
+                                                    "popcornHasActed":false
+                                                }
+                                            }        
+                                    return update;
+                            })
+          game.scenes.viewed.updateEmbeddedEntity("Token", updates);
           game.combat.nextRound();
           ChatMessage.create({content: "${s_newexchange}", speaker: { alias: "${s_game}"}})
           '>${s_nextexchange}</button></p>`
 
           myContents += `<p><button type="button" onclick='
           let actors = canvas.tokens.placeables;
-          actors.forEach(actor =>{actor.setFlag("world","popcornHasActed",false)});
+            let updates = actors.map(actor => {
+                            let update = {};
+                            update._id = actor.id;
+                            update.flags = {
+                                                "world":
+                                                {
+                                                    "popcornHasActed":false
+                                                }
+                                            }        
+                                    return update;
+                            })
+          game.scenes.viewed.updateEmbeddedEntity("Token", updates);
           game.combat.endCombat();
           ChatMessage.create({content: "${s_endingconflict}", speaker: { alias: "${s_game}"}})
           '>${s_endconflict}</button></p>`
@@ -172,7 +198,6 @@ class PopcornViewer extends Application {
     }
   }
 }
-
 
 Hooks.on('getSceneControlButtons', (hudButtons) => {
   PopcornViewer.prepareButtons(hudButtons);

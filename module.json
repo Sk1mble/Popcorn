@@ -4,7 +4,7 @@
   "description": "A small module that creates a pop-out window for running games that use popcorn/elective action order initiative.",
   "author": "Richard Bellingham (Skimble)",
   "scripts": ["./Popcorn.js"],
-  "version": "1.2.0",
+  "version": "1.2.2",
   "minimumCoreVersion": "0.6.0",
   "compatibleCoreVersion": "0.7.7",
   "socket": true,
@@ -19,6 +19,6 @@
       "path": "languages/es.json"
   }],
   "url": "https://github.com/Sk1mble/Popcorn",
-  "download": "https://github.com/Sk1mble/Popcorn/archive/V1.2.0.zip",
+  "download": "https://github.com/Sk1mble/Popcorn/archive/v1.2.2.zip",
   "manifest": "https://raw.githubusercontent.com/Sk1mble/Popcorn/master/module.json"
 }
