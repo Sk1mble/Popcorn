@@ -1,0 +1,5 @@
+1.1.2
+0.8.6 functionality
+
+1.1.1 
+Improved the behaviour of hook generation so only one set of hooks will ever be generated for Popcorn.

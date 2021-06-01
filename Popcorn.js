@@ -1,5 +1,5 @@
 class PopcornViewer extends Application {
-  super(options){
+  super(options) {
     //console.log("Super called");
   }
 
@@ -7,135 +7,135 @@ class PopcornViewer extends Application {
     super.activateListeners(html);
     const myButton = html.find("button[name='act']");
     myButton.on("click", event => this._onClickButton(event, html));
-  }   
-  
+  }
+
   async _onClickButton(event, html) {
     //console.log("Event target id "+event.target.id);
 
     const tokenId = event.target.id;
     const token = canvas.tokens.get(tokenId);
-    
-    await token.setFlag("world","popcornHasActed",true);
+
+
+    await token.setFlag("world", "popcornHasActed", true);
     await ChatMessage.create({
       content: `${token.name} is acting now.`,
       speaker:
-          {
-              alias: "Game: "
-          }
-      });
-      game.socket.emit("module.Popcorn",{"HasActed":true});
+      {
+        alias: "Game: "
+      }
+    });
+    game.socket.emit("module.Popcorn", { "HasActed": true });
     this.render(false);
   }
 
-  static prepareButtons(hudButtons){
-    let hud = hudButtons.find(val => {return val.name == "token";})
-    
-    if (hud){
-        hud.tools.push({
-            name:"PopcornInitiative",
-            title:"Pop-out popcorn initiative tracker",
-            icon:"fas fa-bolt",
-            onClick: ()=> {
-              const delay = 200;
+  static prepareButtons(hudButtons) {
+    let hud = hudButtons.find(val => { return val.name == "token"; })
 
-              let opt=Dialog.defaultOptions;
-              opt.resizable=true;
-              opt.title="Popcorn Initiative Tracker";
-              opt.width=400;
-              opt.height=500;
-              opt.minimizable=true;
-              
-              var viewer;
-              viewer = new PopcornViewer(opt);
-              viewer.render(true);  
+    if (hud) {
+      hud.tools.push({
+        name: "PopcornInitiative",
+        title: "Pop-out popcorn initiative tracker",
+        icon: "fas fa-bolt",
+        onClick: () => {
+          const delay = 200;
 
-              game.system.popcorn = viewer;
-              game.socket.on("module.Popcorn", data => viewer.render(false))
-            },
-            button:true
-        });
+          let opt = Dialog.defaultOptions;
+          opt.resizable = true;
+          opt.title = "Popcorn Initiative Tracker";
+          opt.width = 400;
+          opt.height = 500;
+          opt.minimizable = true;
+
+          var viewer;
+          viewer = new PopcornViewer(opt);
+          viewer.render(true);
+
+          game.system.popcorn = viewer;
+          game.socket.on("module.Popcorn", data => viewer.render(false))
+        },
+        button: true
+      });
     }
   }
 
-  getData (){
-    let content={content:`${this.preparePopcorn()}`}
+  getData() {
+    let content = { content: `${this.preparePopcorn()}` }
     return content;
-} 
+  }
 
-  preparePopcorn(){
+  preparePopcorn() {
     //console.log("PreparePopcorn called");
     //Get a list of the active combatants
-    if (game.combat!= null){ 
-        var combatants = game.combat.combatants;
-        var tokens = canvas.tokens.placeables;
-        var tokenId;
-        var viewer = viewer;
+    if (game.combat != null) {
+      var combatants = game.combat.combatants;
+      var tokens = canvas.tokens.placeables;
+      var tokenId;
+      var viewer = viewer;
 
-        let table=`<h1>Exchange ${game.combat.round}</h1><table border="1" cellspacing="0" cellpadding="4">`;
+      let table = `<h1>Exchange ${game.combat.round}</h1><table border="0" cellspacing="0" cellpadding="4">`;
 
-        //Create a header row
-        let rows;
-        if (game.user.isGM){
-            rows=[`<tr><td style="background: black; color: white;"></td><td style="background: black; color: white;">Character</td><td style="background: black; color: white;">Act Now?</td>`];
-        } else {
-            rows = [`<tr><td style="background: black; color: white;"></td><td style="background: black; color: white;">Character</td>`];
+      //Create a header row
+      let rows;
+      if (game.user.isGM) {
+        rows = [`<tr><td style="background: black; color: white;"></td><td style="background: black; color: white;">Character</td><td style="background: black; color: white;">Act Now?</td>`];
+      } else {
+        rows = [`<tr><td style="background: black; color: white;"></td><td style="background: black; color: white;">Character</td>`];
+      }
+      //Create a row for each combatant with the correct flag
+      for (const [key, combatant] of combatants.entries()) {
+        if (combatant.token != undefined) {
+          tokenId = combatant.token.id;//This is the representative of a token in the combatants list.
         }
-        //Create a row for each combatant with the correct flag
-        for(var i=0;i<combatants.length;i++){
-          if (combatants[i].token != undefined){ 
+        //Now to find the token in the placeables layer that corresponds to this token.
 
-            tokenId = combatants[i].token._id;//This is the representative of a token in the combatants list.
-          }
-            //Now to find the token in the placeables layer that corresponds to this token.
-            
-            let foundToken = undefined;
+        let foundToken = undefined;
 
-            if (tokenId != undefined){
-              foundToken = tokens.find(val => {return val.id == tokenId;})
-            }
-            if ((combatants[i].hidden || foundToken.data.hidden) && !game.user.isGM){
-              continue;
-            }
+        if (tokenId != undefined) {
+          foundToken = tokens.find(val => { return val.id == tokenId; })
+        }
+        if ((combatant.hidden || foundToken.data.hidden) && !game.user.isGM) {
+          continue;
+        }
 
-            let hasActed = true;
+        let hasActed = true;
 
-            if (foundToken != undefined){
-              //There is no token for this actor in the conflict; it probably means the token has been deleted from the scene. We need to ignore this actor. Easiest way to do that is to leave hasActed as true.
-              hasActed = foundToken.getFlag("world","popcornHasActed");
-            } 
-            
-            if (game.user.isGM) {
-                if (hasActed == undefined || hasActed == false){
-                rows.push(`<tr><td width="70"><img src="${foundToken.actor.img}" width="50" height="50"></img>
+        if (foundToken != undefined) {
+          //There is no token for this actor in the conflict; it probably means the token has been deleted from the scene. We need to ignore this actor. Easiest way to do that is to leave hasActed as true.
+          hasActed = combatant.token.getFlag("world", "popcornHasActed");
+        }
+
+        if (game.user.isGM) {
+          if (hasActed == undefined || hasActed == false) {
+            rows.push(`<tr><td width="70"><img src="${foundToken.actor.img}" width="50" height="50"></img>
                 </td><td>${foundToken.name}</td>
                 <td><button type="button" id="${tokenId}" name="act" onclick=''>Act</button></td></tr>`);
-            }
-            } else {
-                if (hasActed == undefined || hasActed == false){
-                    rows.push(`<tr><td width="70"><img src="${foundToken.actor.img}" width="50" height="50"></img></td><td>${foundToken.name}</td>`)
-                }
-            }
+          }
+        } else {
+          if (hasActed == undefined || hasActed == false) {
+            rows.push(`<tr><td width="70"><img src="${foundToken.actor.img}" width="50" height="50"></img></td><td>${foundToken.name}</td>`)
+          }
         }
-        let myContents=`${table}`;
-        rows.forEach(element => myContents+=element)
-        myContents+="</table>"
-        if (game.user.isGM){
-            myContents+=`<button type ="button" onclick='
+      }
+      let myContents = `${table}`;
+      rows.forEach(element => myContents += element)
+      myContents += "</table>"
+      if (game.user.isGM) {
+        myContents += `<button type ="button" onclick='
             let actors = canvas.tokens.placeables;
             actors.forEach(actor =>{actor.setFlag("world","popcornHasActed",false)});
             game.combat.nextRound();
             ChatMessage.create({content: "Starting a new exchange.", speaker : { alias : "Game: "}})
             '>Next Exchange</button><p>`
-            myContents+=`<button type ="button" onclick='
+        myContents += `<button type ="button" onclick='
             let actors = canvas.tokens.placeables;
             actors.forEach(actor =>{actor.setFlag("world","popcornHasActed",false)});
             game.combat.endCombat();
             ChatMessage.create({content: "Ending the conflict.", speaker : { alias : "Game: "}})
             '>End this conflict</button>`
-        }
-        return myContents;
-    } else {return "<h1>No Conflicts Detected!</h1>"}
-}
+      }
+      return myContents;
+    } else { return "<h1>No Conflicts Detected!</h1>" }
+  }
 
   // This function prepares the contents of the popcorn initiative viewer
   // Display the current exchange number
@@ -146,16 +146,15 @@ class PopcornViewer extends Application {
 
 }
 
-Hooks.on('getSceneControlButtons', function(hudButtons)
-{
-    PopcornViewer.prepareButtons(hudButtons);
+Hooks.on('getSceneControlButtons', function (hudButtons) {
+  PopcornViewer.prepareButtons(hudButtons);
 })
 
 Hooks.on('renderCombatTracker', () => {
-  if (game.system.popcorn != undefined) setTimeout(function(){game.system.popcorn.render(false);},50);
+  if (game.system.popcorn != undefined) setTimeout(function () { game.system.popcorn.render(false); }, 50);
 })
 Hooks.on('updateToken', (scene, token, data) => {
-if (data.hidden!=undefined){
-  if (game.system.popcorn != undefined) setTimeout(function(){game.system.popcorn.render(false);},50);
-}
+  if (data.hidden != undefined) {
+    if (game.system.popcorn != undefined) setTimeout(function () { game.system.popcorn.render(false); }, 50);
+  }
 })
