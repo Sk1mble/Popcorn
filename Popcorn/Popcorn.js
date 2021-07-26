@@ -73,7 +73,7 @@ class PopcornViewer extends Application {
     //console.log("PreparePopcorn called");
     //Get a list of the active combatants
     if (game.combat!= null){ 
-        var combatants = game.combat.combatants;
+        var combatants = game.combat.combatants.toJSON();
         var tokens = canvas.tokens.placeables;
         var tokenId;
         var viewer = viewer;
